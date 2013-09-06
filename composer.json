@@ -1,10 +1,10 @@
 {
-    "name": "DragonBe/social-sdk-php",
+    "name": "dragonbe/social-sdk-php",
     "type": "library",
     "description": "Social Media API SDK for PHP",
     "keywords": ["oauth","twitter"],
     "homepage": "http://github.com/DragonBe/social-sdk-php",
-    "license": "CC BY-SA 3.0",
+    "license": "CC-BY-SA-3.0",
     "authors": [
         {
             "name": "Michelangelo van Dam",
@@ -13,8 +13,15 @@
             "role": "Developer"
         }
     ],
+    "repositories": [
+        {
+            "type": "pear",
+            "url": "http://pear.php.net"
+        }
+    ],
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "pear-pear/HTTP_Request2": "2.1.1"
     },
     "autoload": {
         "psr-0": {
