@@ -132,7 +132,7 @@ class HttpClient
     /**
      * Make a request and return the response
      *
-     * @return string The JSON encoded response
+     * @return \HTTP_Request2_Response The response
      */
     public function request()
     {
@@ -142,8 +142,8 @@ class HttpClient
         $this->getClient()->getMethod($this->getMethod());
         $this->getClient()->setHeader($header);
         $response = $this->getClient()->send();
-        $json = $response->getBody();
-        return $json;
+
+        return $response;
     }
 
     /**
@@ -197,12 +197,14 @@ class HttpClient
      */
     protected function _createSignatureBase($params)
     {
+        $queryParams = array_merge($params, $this->_getUrlQueryParams());
+        ksort($queryParams);
         $attribs = array ();
-        foreach ($params as $key => $value) {
+        foreach ($queryParams as $key => $value) {
             $attribs[] = $key . '=' . rawurlencode($value);
         }
         $signatureBase = $this->getMethod() . '&';
-        $signatureBase .= rawurlencode($this->getUrl()) . '&';
+        $signatureBase .= rawurlencode($this->_getBaseUrl()) . '&';
         $signatureBase .= rawurlencode(implode('&', $attribs));
         return $signatureBase;
     }
@@ -234,6 +236,31 @@ class HttpClient
             hash_hmac('sha1', $signatureBase, $signKey, true)
         );
         return $signature;
+    }
+
+    /**
+     * Creating a base URL without query parameters
+     *
+     * @return string The base URL without query parameters
+     */
+    protected function _getBaseUrl()
+    {
+        $url = $this->getUrl();
+        if (-1 !== strpos($url, '?')) {
+            return substr($url, 0, strpos($url, '?'));
+        }
+        return $url;
+    }
+
+    /**
+     * Retrieve the query parameters from a URL
+     *
+     * @return array An array with key/value pairs from query string
+     */
+    protected function _getUrlQueryParams()
+    {
+        $url = new \Net_URL2($this->getUrl());
+        return $url->getQueryVariables();
     }
 
 }

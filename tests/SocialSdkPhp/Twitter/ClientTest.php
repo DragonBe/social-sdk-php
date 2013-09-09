@@ -2,25 +2,62 @@
 
 namespace SocialSdkPhp\Twitter;
 
+use SocialSdkPhp\HttpClient;
+
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
+    protected $_config  = array(
+        'consumerKey' => 'me2bhXb8kJnH6',
+        'consumerSecret' => 'd69e7f56a71d42e1d08a6e24e2345a84f467e945',
+        'accessToken' => '505593412-IFuSt1lL7h1nKTh1SiSVaL1dY0uRwR0n9',
+        'accessSecret' => '45e3dc3574faeb41eec294d1a8213c1b50b42910',
+    );
     /**
      * Test verifying user credentials
      *
      * @link https://dev.twitter.com/docs/api/1.1/get/account/verify_credentials
      */
-    public function testClientCanVerifyCredentials()
+    public function testClientCanVerifyCorrectCredentials()
     {
-        $client = new Client();
-        $result = $client->accountVerifyCredentials(false, false);
+        $rawResponse = file_get_contents(__DIR__ . '/_files/accountVerifyWithoutParams.txt');
+        $mock = new \HTTP_Request2_Adapter_Mock();
+        $mock->addResponse($rawResponse);
 
-        $this->assertInstanceOf('\SocialSdkPhp\Twitter\Account\Result', $result,
-            'The result is not a valid Result object');
+        $client = new Client($this->_config);
+        $client->getHttpClient()->getClient()->setAdapter($mock);
+        $result = $client->accountVerifyCredentials();
 
-        $this->assertSame(200, $result->getResponse()->getStatus(),
-            $result->getResponse()->getReasonPhrase() . ': ' .
-            $result->getResponse()->getEffectiveUrl());
+        $this->assertTrue($result);
+    }
 
-        var_dump($result);
+    public function testClientCannotVerifyWithWrongKeys()
+    {
+        $rawResponse = file_get_contents(__DIR__ . '/_files/accountVerifyWithBadCredentials.txt');
+        $mock = new \HTTP_Request2_Adapter_Mock();
+        $mock->addResponse($rawResponse);
+
+        $client = new Client($this->_config);
+        $client->getHttpClient()->getClient()->setAdapter($mock);
+
+        $config = $client->getConfig();
+        $config['consumerKey'] = 'blabla';
+        $client->setConfig($config);
+        $result = $client->accountVerifyCredentials();
+
+        $this->assertFalse($result);
+    }
+
+    public function testClientCannotVerifyWhenExceedingRequestRateLimit()
+    {
+        $rawResponse = file_get_contents(__DIR__ . '/_files/accountVerifyExceedRequestLimit.txt');
+        $mock = new \HTTP_Request2_Adapter_Mock();
+        $mock->addResponse($rawResponse);
+
+        $client = new Client($this->_config);
+        $client->getHttpClient()->getClient()->setAdapter($mock);
+
+        $result = $client->accountVerifyCredentials();
+
+        $this->assertFalse($result);
     }
 }
