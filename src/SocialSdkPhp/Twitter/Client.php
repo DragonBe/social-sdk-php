@@ -4,6 +4,7 @@ namespace SocialSdkPhp\Twitter;
 
 use SocialSdkPhp\HttpClient;
 use SocialSdkPhp\Twitter\Account\Result;
+use SocialSdkPhp\Twitter\Account\Settings;
 
 /**
  * This is the generic Twitter Client that will be used to consume
@@ -13,8 +14,12 @@ use SocialSdkPhp\Twitter\Account\Result;
  */
 class Client
 {
+    const METHOD_GET = 'GET';
+    const METHOD_POST = 'POST';
+
     const TWITTER_API_URI = 'https://api.twitter.com/1.1';
     const TWITTER_ACCOUNT_VERIFY_CREDENTIALS = '/account/verify_credentials.json';
+    const TWITTER_ACCOUNT_SETTINGS = '/account/settings.json';
 
     /**
      * @var \SocialSdkPhp\HttpClient
@@ -103,15 +108,29 @@ class Client
         $url .= '?' . implode('&', $params);
 
         $httpClient = $this->getHttpClient();
-
         $httpClient->setUrl($url)
             ->setConfig($this->getConfig())
-            ->setMethod('GET');
+            ->setMethod(self::METHOD_GET);
 
         $result = $httpClient->request();
         if (200 !== $result->getStatus()) {
             return false;
         }
         return true;
+    }
+
+    public function getAccountSettings()
+    {
+        $url = self::TWITTER_API_URI . self::TWITTER_ACCOUNT_SETTINGS;
+
+        $httpClient = $this->getHttpClient();
+        $httpClient->setUrl($url)
+            ->setConfig($this->getConfig())
+            ->setMethod(self::METHOD_GET);
+
+        $result = $httpClient->request();
+        var_dump($result->getBody());
+        $settings = new Settings($result->getBody());
+        return $settings;
     }
 }

@@ -60,4 +60,22 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($result);
     }
+
+    public function testClientCanRetrieveAccountSettings()
+    {
+        $rawResponse = file_get_contents(__DIR__ . '/_files/accountDefaultSettings.txt');
+        $mock = new \HTTP_Request2_Adapter_Mock();
+        $mock->addResponse($rawResponse);
+
+        $client = new Client($this->_config);
+        $client->getHttpClient()->getClient()->setAdapter($mock);
+
+        $result = $client->getAccountSettings();
+
+        $this->assertJsonStringEqualsJsonFile(
+            __DIR__ . '/_files/accountSettingsBeforeChange.txt',
+            $result->toJson(),
+            'Received JSON data does not match expected JSON data'
+        );
+    }
 }

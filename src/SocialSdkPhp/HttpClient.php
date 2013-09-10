@@ -246,7 +246,7 @@ class HttpClient
     protected function _getBaseUrl()
     {
         $url = $this->getUrl();
-        if (-1 !== strpos($url, '?')) {
+        if (false !== strpos($url, '?')) {
             return substr($url, 0, strpos($url, '?'));
         }
         return $url;
