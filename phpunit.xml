@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./src/autoload.php">
+
+    <testsuites>
+        <testsuite name="SocialSdkPhp Test Suite">
+            <directory>./tests/SocialSdkPhp/</directory>
+        </testsuite>
+    </testsuites>
+
+</phpunit>

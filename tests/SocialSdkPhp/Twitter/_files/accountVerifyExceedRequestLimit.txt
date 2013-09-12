@@ -1,0 +1,13 @@
+HTTP/1.1 429 Client Error (429)
+content-type: application/json; charset=utf-8
+date: Mon, 09 Sep 2013 13:46:52 UTC
+server: tfe
+set-cookie: guest_id=v1%3A137873441267342901; Domain=.twitter.com; Path=/; Expires=Wed, 09-Sep-2015 13:46:52 UTC
+strict-transport-security: max-age=631138519
+x-rate-limit-limit: 15
+x-rate-limit-remaining: 0
+x-rate-limit-reset: 1378735278
+Content-Encoding: gzip
+Connection: close
+
+{"errors":[{"message":"Rate limit exceeded","code":88}]}
