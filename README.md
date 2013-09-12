@@ -4,7 +4,7 @@
 
 This project is fully unit tested by [Travis-CI](http://travis-ci.org).
 
-[![Build Status](https://api.travis-ci.org/DragonBe/social-sdk-php.png)](https://api.travis-ci.org/DragonBe/social-sdk-php)
+[![Build Status](https://api.travis-ci.org/DragonBe/social-sdk-php.png)](https://travis-ci.org/DragonBe/social-sdk-php)
 
 ## Introduction
 
