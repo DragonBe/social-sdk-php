@@ -1,0 +1,27 @@
+HTTP/1.1 200 OK
+cache-control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+content-encoding: gzip
+content-length: 182
+content-type: application/json; charset=utf-8
+date: Thu, 12 Sep 2013 10:25:46 GMT
+etag: "8c9a2bc9f2e5a0e6b60fec9a9c19579e"
+expires: Tue, 31 Mar 1981 05:00:00 GMT
+last-modified: Thu, 12 Sep 2013 10:25:46 GMT
+pragma: no-cache
+server: tfe
+set-cookie: dnt=; domain=.twitter.com; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+set-cookie: twid=u%3D1851344172%7CL5Sn3dd9uN5tx97VcNmY%2BAM0ZK8%3D; domain=.twitter.com; path=/; secure
+set-cookie: _twitter_sess=BAh7BzoHaWQiJTYwMTgyYWU3MmY4OTVmZmRkNDk3MWQxMTY5NDc0M2M5Og9j%250AcmVhdGVkX2F0bCsIT4q0EUEB--ca443a965bf6b914f893743b15697ef8f0858e27; domain=.twitter.com; path=/; secure; HttpOnly
+set-cookie: guest_id=v1%3A137898154644712616; Domain=.twitter.com; Path=/; Expires=Sat, 12-Sep-2015 10:25:46 UTC
+status: 200 OK
+strict-transport-security: max-age=631138519
+vary: Accept-Encoding
+x-access-level: read-write
+x-frame-options: SAMEORIGIN
+x-mid: 0dd29cf8f28ae6f057723b19c4a89562b6e6b7e1
+x-runtime: 0.10347
+x-transaction: 3f51703e0fba1efc
+x-transaction-mask: a6183ffa5f8ca943ff1b53b5644ef114a124a97c
+x-xss-protection: 1; mode=block
+
+{"use_cookie_personalization":true,"language":"nl","geo_enabled":false,"display_sensitive_media":false,"protected":false,"screen_name":"WooshrTest","sleep_time":{"end_time":null,"enabled":false,"start_time":null},"always_use_https":true,"discoverable_by_email":true}

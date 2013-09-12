@@ -224,7 +224,7 @@ class Settings implements DataModel
      * @param \SocialSdkPhp\Twitter\Account\Settings\SleepTime $sleepTime
      * @return \SocialSdkPhp\Twitter\Account\Settings
      */
-    public function setSleepTime($sleepTime)
+    public function setSleepTime(SleepTime $sleepTime)
     {
         $this->_sleepTime = $sleepTime;
         return $this;
@@ -235,6 +235,9 @@ class Settings implements DataModel
      */
     public function getSleepTime()
     {
+        if (null === $this->_sleepTime) {
+            $this->setSleepTime(new SleepTime());
+        }
         return $this->_sleepTime;
     }
 
@@ -254,6 +257,9 @@ class Settings implements DataModel
      */
     public function getTimeZone()
     {
+        if (null === $this->_timeZone) {
+            $this->setTimeZone(new TimeZone());
+        }
         return $this->_timeZone;
     }
 
@@ -291,17 +297,28 @@ class Settings implements DataModel
         if (is_array($data)) {
             $data = new \ArrayObject($data, \ArrayObject::ARRAY_AS_PROPS);
         }
-        $this->setTimeZone(new TimeZone($data->time_zone))
-            ->setProtected($data->protected)
-            ->setScreenName($data->screen_name)
-            ->setAlwaysUseHttps($data->always_use_https)
-            ->setUseCookiePersonalization($data->use_cookie_personalization)
-            ->setSleepTime(new SleepTime($data->sleep_time))
-            ->setGeoEnabled($data->geo_enabled)
-            ->setLanguage($data->language)
-            ->setDiscoverableByEmail($data->discoverable_by_email)
-            ->setDiscoverableByMobilePhone($data->discoverable_by_mobile_phone)
-            ->setDisplaySensitiveMedia($data->display_sensitive_media);
+        if (isset ($data->time_zone))
+            $this->setTimeZone(new TimeZone($data->time_zone));
+        if (isset ($data->protected))
+            $this->setProtected($data->protected);
+        if (isset ($data->screen_name))
+            $this->setScreenName($data->screen_name);
+        if (isset ($data->always_use_https))
+            $this->setAlwaysUseHttps($data->always_use_https);
+        if (isset ($data->use_cookie_personalization))
+            $this->setUseCookiePersonalization($data->use_cookie_personalization);
+        if (isset ($data->sleep_time))
+            $this->setSleepTime(new SleepTime($data->sleep_time));
+        if (isset ($data->geo_enabled))
+            $this->setGeoEnabled($data->geo_enabled);
+        if (isset ($data->language))
+            $this->setLanguage($data->language);
+        if (isset ($data->discoverable_by_email))
+            $this->setDiscoverableByEmail($data->discoverable_by_email);
+        if (isset ($data->discoverable_by_mobile_phone))
+            $this->setDiscoverableByMobilePhone($data->discoverable_by_mobile_phone);
+        if (isset ($data->display_sensitive_media))
+            $this->setDisplaySensitiveMedia($data->display_sensitive_media);
         return $this;
     }
 
@@ -335,5 +352,20 @@ class Settings implements DataModel
     public function toJson()
     {
         return json_encode($this->toArray());
+    }
+
+    public function toPost()
+    {
+        $postData = array ();
+        $postData['lang'] = null !== $this->getLanguage() ? $this->getLanguage() : 'en';
+        if (null !== $this->getSleepTime() && $this->getSleepTime()->isEnabled()) {
+            $postData['sleep_time_enabled'] = $this->getSleepTime()->isEnabled();
+            $postData['start_sleep_time'] = $this->getSleepTime()->getStartTime()->format('H');
+            $postData['end_sleep_time'] = $this->getSleepTime()->getEndTime()->format('H');
+        }
+        if (null !== $this->getTimeZone() && null !== $this->getTimeZone()->getTimeZoneName()) {
+            $postData['time_zone'] = $this->getTimeZone()->getTimeZoneName();
+        }
+        return $postData;
     }
 }

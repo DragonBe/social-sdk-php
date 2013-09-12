@@ -45,7 +45,7 @@ class SleepTime implements DataModel
     /**
      * @return boolean
      */
-    public function getEnabled()
+    public function isEnabled()
     {
         return $this->_enabled;
     }
@@ -119,9 +119,9 @@ class SleepTime implements DataModel
     public function toArray()
     {
         return array (
-            'enabled' => $this->getEnabled(),
-            'end_time' => null === $this->getEndTime() ? null : $this->getEndTime()->format('H:i:s'),
-            'start_time' => null === $this->getStartTime() ? null : $this->getStartTime()->format('H:i:s'),
+            'enabled' => $this->isEnabled(),
+            'end_time' => null === $this->getEndTime() ? null : $this->getEndTime()->format('H'),
+            'start_time' => null === $this->getStartTime() ? null : $this->getStartTime()->format('H'),
         );
     }
     /**

@@ -20,4 +20,4 @@ x-rate-limit-remaining: 11
 x-rate-limit-reset: 1378806622
 x-transaction: 9ef502c32f37d4c8
 
-{"time_zone":{"name":"Brussels","utc_offset":7200,"tzinfo_name":"Europe\/Brussels"},"protected":false,"screen_name":"in2itvof","always_use_https":true,"use_cookie_personalization":true,"sleep_time":{"enabled":false,"end_time":null,"start_time":null},"geo_enabled":true,"language":"en","discoverable_by_email":true,"discoverable_by_mobile_phone":false,"display_sensitive_media":false}
+{"time_zone":{"name":null,"utc_offset":null,"tzinfo_name":null},"protected":false,"screen_name":"WooshrTest","always_use_https":true,"use_cookie_personalization":true,"sleep_time":{"enabled":false,"end_time":null,"start_time":null},"geo_enabled":false,"language":"en","discoverable_by_email":true,"discoverable_by_mobile_phone":false,"display_sensitive_media":false}

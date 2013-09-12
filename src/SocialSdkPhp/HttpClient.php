@@ -19,6 +19,11 @@ class HttpClient
     protected $_method;
 
     /**
+     * @var array Optional data to send to the API
+     */
+    protected $_data;
+
+    /**
      * @var \HTTP_Request2 The HTTP Client to make connections
      */
     protected $_client;
@@ -130,6 +135,27 @@ class HttpClient
     }
 
     /**
+     * Sets optional data to be submitted to the API
+     *
+     * @param array $data
+     * @return \SocialSdkPhp\HttpClient
+     */
+    public function setData($data)
+    {
+        $this->_data = $data;
+        return $this;
+    }
+
+    /**
+     * Retrieve the optional data
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->_data;
+    }
+
+    /**
      * Make a request and return the response
      *
      * @return \HTTP_Request2_Response The response
@@ -139,8 +165,15 @@ class HttpClient
         $header = array($this->_createAuthorizationHeader());
 
         $this->getClient()->setUrl($this->getUrl());
-        $this->getClient()->getMethod($this->getMethod());
+        $this->getClient()->setMethod($this->getMethod());
         $this->getClient()->setHeader($header);
+        if (null !== $this->getData()) {
+            $data = array ();
+            foreach ($this->getData() as $key => $value) {
+                $data[] = $key . '=' . $value;
+            }
+            $this->getClient()->setBody(implode('&', $data));
+        }
         $response = $this->getClient()->send();
 
         return $response;
@@ -198,6 +231,9 @@ class HttpClient
     protected function _createSignatureBase($params)
     {
         $queryParams = array_merge($params, $this->_getUrlQueryParams());
+        if (null !== $this->getData()) {
+            $queryParams = array_merge($queryParams, $this->getData());
+        }
         ksort($queryParams);
         $attribs = array ();
         foreach ($queryParams as $key => $value) {

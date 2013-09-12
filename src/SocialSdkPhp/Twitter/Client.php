@@ -5,6 +5,7 @@ namespace SocialSdkPhp\Twitter;
 use SocialSdkPhp\HttpClient;
 use SocialSdkPhp\Twitter\Account\Result;
 use SocialSdkPhp\Twitter\Account\Settings;
+use SocialSdkPhp\Twitter\Client\Account;
 
 /**
  * This is the generic Twitter Client that will be used to consume
@@ -18,8 +19,7 @@ class Client
     const METHOD_POST = 'POST';
 
     const TWITTER_API_URI = 'https://api.twitter.com/1.1';
-    const TWITTER_ACCOUNT_VERIFY_CREDENTIALS = '/account/verify_credentials.json';
-    const TWITTER_ACCOUNT_SETTINGS = '/account/settings.json';
+
 
     /**
      * @var \SocialSdkPhp\HttpClient
@@ -30,6 +30,11 @@ class Client
      * @var array
      */
     protected $_config;
+
+    /**
+     * @var \SocialSdkPhp\Twitter\Client\Account;
+     */
+    protected $_account;
 
     public function __construct($config = null, $httpClient = null)
     {
@@ -89,48 +94,21 @@ class Client
     }
 
     /**
-     * Verifies if the account details are still valid or not
-     *
-     * @param bool $includeEntities
-     * @param bool $skipStatus
-     * @return bool
+     * @param \SocialSdkPhp\Twitter\Client\Account $account
      */
-    public function accountVerifyCredentials($includeEntities = false, $skipStatus = false)
+    public function setAccount($account)
     {
-        $url = self::TWITTER_API_URI . self::TWITTER_ACCOUNT_VERIFY_CREDENTIALS;
-        $params = array ();
-        if (true === $includeEntities) {
-            $params[] = 'include_entities=true';
-        }
-        if (true === $skipStatus) {
-            $params[] = 'skip_status=true';
-        }
-        $url .= '?' . implode('&', $params);
-
-        $httpClient = $this->getHttpClient();
-        $httpClient->setUrl($url)
-            ->setConfig($this->getConfig())
-            ->setMethod(self::METHOD_GET);
-
-        $result = $httpClient->request();
-        if (200 !== $result->getStatus()) {
-            return false;
-        }
-        return true;
+        $this->_account = $account;
     }
 
-    public function getAccountSettings()
+    /**
+     * @return \SocialSdkPhp\Twitter\Client\Account
+     */
+    public function getAccount()
     {
-        $url = self::TWITTER_API_URI . self::TWITTER_ACCOUNT_SETTINGS;
-
-        $httpClient = $this->getHttpClient();
-        $httpClient->setUrl($url)
-            ->setConfig($this->getConfig())
-            ->setMethod(self::METHOD_GET);
-
-        $result = $httpClient->request();
-        var_dump($result->getBody());
-        $settings = new Settings($result->getBody());
-        return $settings;
+        if (null === $this->_account) {
+            $this->setAccount(new Account($this->getConfig(), $this->getHttpClient()));
+        }
+        return $this->_account;
     }
 }

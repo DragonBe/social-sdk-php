@@ -3,6 +3,7 @@
 namespace SocialSdkPhp\Twitter;
 
 use SocialSdkPhp\HttpClient;
+use SocialSdkPhp\Twitter\Account\Settings;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,7 +26,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $client = new Client($this->_config);
         $client->getHttpClient()->getClient()->setAdapter($mock);
-        $result = $client->accountVerifyCredentials();
+        $result = $client->getAccount()->accountVerifyCredentials();
 
         $this->assertTrue($result);
     }
@@ -42,7 +43,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $config = $client->getConfig();
         $config['consumerKey'] = 'blabla';
         $client->setConfig($config);
-        $result = $client->accountVerifyCredentials();
+        $result = $client->getAccount()->accountVerifyCredentials();
 
         $this->assertFalse($result);
     }
@@ -56,7 +57,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client = new Client($this->_config);
         $client->getHttpClient()->getClient()->setAdapter($mock);
 
-        $result = $client->accountVerifyCredentials();
+        $result = $client->getAccount()->accountVerifyCredentials();
 
         $this->assertFalse($result);
     }
@@ -70,11 +71,40 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client = new Client($this->_config);
         $client->getHttpClient()->getClient()->setAdapter($mock);
 
-        $result = $client->getAccountSettings();
+        $result = $client->getAccount()->getAccountSettings();
 
         $this->assertJsonStringEqualsJsonFile(
-            __DIR__ . '/_files/accountSettingsBeforeChange.txt',
+            __DIR__ . '/_files/accountSettingsBeforeChange.json',
             $result->toJson(),
+            'Received JSON data does not match expected JSON data'
+        );
+        return $result;
+    }
+
+    /**
+     * @depends testClientCanRetrieveAccountSettings
+     */
+    public function testClientCanPostAccountSettingsChanges($settings)
+    {
+        $rawResponse = file_get_contents(__DIR__ . '/_files/accountSettingsAfterUpdate.txt');
+
+        $mock = new \HTTP_Request2_Adapter_Mock();
+        $mock->addResponse($rawResponse);
+
+        $this->assertInstanceOf('\SocialSdkPhp\Twitter\Account\Settings', $settings);
+
+        $settings->setLanguage('nl');
+        $client = new Client($this->_config);
+        $client->getHttpClient()->getClient()->setAdapter($mock);
+
+        $result = $client->getAccount()->updateAccountSettings($settings);
+
+        $expected = new Settings(
+            json_decode(file_get_contents(__DIR__ . '/_files/accountSettingsAfterUpdate.json'))
+        );
+        $this->assertEquals(
+            $expected,
+            $result,
             'Received JSON data does not match expected JSON data'
         );
     }
