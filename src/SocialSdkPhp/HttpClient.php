@@ -91,6 +91,7 @@ class HttpClient
 
     /**
      * @param string $method
+     * @return \SocialSdkPhp\HttpClient
      * @throw \InvalidArgumentException
      */
     public function setMethod($method)

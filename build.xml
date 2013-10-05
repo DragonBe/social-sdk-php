@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Social SDK PHP" description="Automated build file for the Social SDK for PHP" default="build">
+
+    <property name="artifacts" value="${project.basedir}"/>
+
+    <target name="clean" description="Cleans up the build artifacts">
+        <delete quiet="true" dir="${artifacts}"/>
+        <mkdir dir="${artifacts}/coverage"/>
+        <mkdir dir="${artifacts}/api"/>
+    </target>
+    <target name="phpunit" description="Running PHPUnit">
+        <phpunit
+            codecoverage="true"
+            haltonerror="true"
+            haltonfailure="true">
+            <formatter todir="${artifacts}/coverage" type="clover"/>
+            <batchtest>
+                <fileset dir="tests">
+                    <include name="**/*Test*.php"/>
+                    <exclude name="**/Abstract*.php"/>
+                </fileset>
+            </batchtest>
+        </phpunit>
+    </target>
+
+    <target name="build" description="The default build that will execute all targets">
+        <phingcall target="phpunit" />
+    </target>
+
+</project>
