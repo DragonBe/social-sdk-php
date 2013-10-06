@@ -14,6 +14,14 @@
         <mkdir dir="${artifacts}/api" />
         <mkdir dir="${artifacts}/logs" />
     </target>
+
+    <target name="composer" description="Install composer packages">
+        <exec
+            command="/usr/bin/php composer.phar install"
+            dir="${project.basedir}"
+            passthru="true" />
+    </target>
+
     <target name="phpunit" description="Running PHPUnit">
         <exec
             command="/usr/bin/phpunit -c phpunit.xml --coverage-clover ${artifacts}/coverage/clover.xml"
@@ -66,6 +74,7 @@
 
     <target name="build" description="The default build that will execute all targets">
         <phingcall target="clean" />
+        <phingcall target="composer" />
         <phingcall target="phpunit" />
         <phingcall target="phpdoc" />
         <phingcall target="phpcpd" />
