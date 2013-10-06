@@ -76,7 +76,7 @@
         <phingcall target="clean" />
         <phingcall target="composer" />
         <phingcall target="phpunit" />
-        <phingcall target="phpdoc" />
+        <!--phingcall target="phpdoc" /-->
         <phingcall target="phpcpd" />
         <phingcall target="phploc" />
         <phingcall target="phpmd" />
