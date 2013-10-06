@@ -1,30 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Social SDK PHP" description="Automated build file for the Social SDK for PHP" default="build">
 
-    <property name="artifacts" value="${project.basedir}"/>
+    <property name="artifacts" value="${project.basedir}/build" />
+
+    <fileset id="source" dir="${project.basedir}/src/SocialSdkPhp">
+        <include name="**/*.php" />
+    </fileset>
 
     <target name="clean" description="Cleans up the build artifacts">
-        <delete quiet="true" dir="${artifacts}"/>
-        <mkdir dir="${artifacts}/coverage"/>
-        <mkdir dir="${artifacts}/api"/>
+        <delete quiet="true" dir="${artifacts}" />
+        <mkdir dir="${artifacts}/coverage" />
+        <touch file="${artifacts}/coverage/clover.xml" />
+        <mkdir dir="${artifacts}/api" />
+        <mkdir dir="${artifacts}/logs" />
     </target>
     <target name="phpunit" description="Running PHPUnit">
-        <phpunit
-            codecoverage="true"
-            haltonerror="true"
-            haltonfailure="true">
-            <formatter todir="${artifacts}/coverage" type="clover"/>
-            <batchtest>
-                <fileset dir="tests">
-                    <include name="**/*Test*.php"/>
-                    <exclude name="**/Abstract*.php"/>
-                </fileset>
-            </batchtest>
-        </phpunit>
+        <exec
+            command="/usr/bin/phpunit -c phpunit.xml --coverage-clover ${artifacts}/coverage/clover.xml"
+            dir="${project.basedir}"
+            passthru="true"/>
+    </target>
+
+    <target name="phpdoc" description="Build API documentation">
+        <phpdoc2
+            title="Social SDK PHP"
+            destdir="${artifacts}/api"
+            template="responsive-twig">
+            <fileset refid="source" />
+        </phpdoc2>
+    </target>
+
+    <target name="phpcpd" description="Find duplicate codesnippets">
+        <phpcpd>
+            <fileset refid="source" />
+            <formatter type="pmd" outfile="${artifacts}/logs/pmd-cpd.xml"/>
+        </phpcpd>
+    </target>
+
+    <target name="phploc" description="Process codebase for quality">
+        <phploc
+            countTests="true"
+            reportType="xml"
+            reportDirectory="${artifacts}/logs"
+            reportName="phploc">
+            <fileset refid="source" />
+        </phploc>
+    </target>
+
+    <target name="phpmd" description="Detecting code smells with mess detector">
+        <phpmd>
+            <fileset refid="source" />
+            <formatter type="xml" outfile="${artifacts}/logs/pmd.xml"/>
+        </phpmd>
+    </target>
+
+    <target name="pdepend" description="Analyze code dependency">
+        <phpdepend>
+            <fileset refid="source" />
+            <logger type="jdepend-xml" outfile="${artifacts}/logs/jdepend.xml"/>
+            <logger type="jdepend-chart" outfile="${artifacts}/logs/jdepend.svg"/>
+            <logger type="overview-pyramid" outfile="${artifacts}/logs/pyramid.svg"/>
+            <analyzer type="coderank-mode" value="method"/>
+        </phpdepend>
     </target>
 
     <target name="build" description="The default build that will execute all targets">
+        <phingcall target="clean" />
         <phingcall target="phpunit" />
+        <phingcall target="phpdoc" />
+        <phingcall target="phpcpd" />
+        <phingcall target="phploc" />
+        <phingcall target="phpmd" />
+        <phingcall target="pdepend" />
     </target>
 
 </project>
