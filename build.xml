@@ -24,7 +24,7 @@
 
     <target name="phpunit" description="Running PHPUnit">
         <exec
-            command="/usr/bin/phpunit -c phpunit.xml --coverage-clover ${artifacts}/coverage/clover.xml"
+            command="/usr/bin/phpunit -c phpunit.xml"
             dir="${project.basedir}"
             passthru="true"/>
     </target>
